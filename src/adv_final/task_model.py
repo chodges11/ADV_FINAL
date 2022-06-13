@@ -25,7 +25,7 @@ class DBModel(pw.Model):
         database = db
 
 
-class Users(DBModel):
+class Tasks(DBModel):
     """
         This class defines tasks.
     """

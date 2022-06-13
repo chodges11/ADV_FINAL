@@ -18,8 +18,7 @@ def init_collections():
     tm.db.connect()
     tm.db.execute_sql('PRAGMA foreign_keys = ON;')
     tm.db.create_tables([
-        tm.Users,
-        tm.Status
+        tm.Tasks,
     ])
     tm.db.close()
 
