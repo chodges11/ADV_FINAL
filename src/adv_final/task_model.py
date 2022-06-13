@@ -31,10 +31,10 @@ class Tasks(DBModel):
     """
     logger.info("Tasks")
     task_id = pw.CharField(primary_key=True, max_length=30)
-    task_name = pw.CharField(max_length=30)
-    task_desc = pw.CharField(max_length=140)
+    task_name = pw.CharField(max_length=30, null=False)
+    task_desc = pw.CharField(max_length=140, null=False)
     task_start = pw.CharField(max_length=10)
     task_due = pw.DateField(max_length=10)
-    task_priority = pw.IntegerField(max_length=1)
+    task_priority = pw.IntegerField()
     task_completed = pw.BooleanField(default=False)
     task_deleted = pw.BooleanField(default=False)
