@@ -38,15 +38,49 @@ def delete_task():
 
 
 def edit_name():
-    pass
+    """Updates the task name."""
+
+    task_id = input('Task ID: ')
+    task_name = input('New Task Name: ')
+
+    try:
+        with tm.db:
+            tm.db.connect(reuse_if_open=True)
+            task = tm.Tasks.get(tm.Tasks.task_id == task_id)
+            task.task_name = task_name
+            task.save()
+            logger.info('Update Task Name.')
+            return True
+
+    except pw.DoesNotExist as error:
+        print("Task Name was not successfully updated.\n")
+        logger.info(f"{type(error)}: {error}")
+        return False
 
 
 def edit_description():
-    pass
+    """Updates the task description."""
+
+    task_id = input('Task ID: ')
+    task_desc = input('New Task Description(140 char max): ')
+
+    try:
+        with tm.db:
+            tm.db.connect(reuse_if_open=True)
+            task = tm.Tasks.get(tm.Tasks.task_id == task_id)
+            task.task_desc = task_desc
+            task.save()
+            logger.info('Update Task Description.')
+            print("Task Description was not successfully updated.\n")
+
+    except pw.DoesNotExist as error:
+        print("Task Description was not successfully updated.\n")
+        logger.info(f"{type(error)}: {error}")
+        return False
 
 
 def set_priority():
-    pass
+    return input('Task Priority(Zero is highest): ')
 
 
 def set_id():
@@ -54,42 +88,42 @@ def set_id():
 
 
 def set_name():
-    pass
+    return input('Task Name: ')
 
 
 def set_description():
-    pass
+    return input('Task Description(140 char max): ')
 
 
 def set_start_date():
-    pass
+    return input('Task Start Date: ')
 
 
 def set_due_date():
-    pass
+    return input('Task Due Date: ')
 
 
 def add_new_task():
     """
     Adds a new Task to the database.
     """
+
     try:
         with tm.db:
             tm.db.connect(reuse_if_open=True)
-            new_user = tm.Tasks.create(
+            new_task = tm.Tasks.create(
                 task_id=set_id(),
                 task_name=set_name(),
                 task_desc=set_description(),
                 task_start=set_start_date(),
                 task_due=set_due_date(),
                 task_priority=set_priority(),
-                task_completed=complete_task(),
-                task_deleted=delete_task()
+                task_completed="Uncompleted",
+                task_deleted="False"
             )
-            new_user.save()
+            new_task.save()
             logger.info('Add New Task')
-            return True
 
     except pw.PeeweeException as error:
+        print("An error occurred while trying to add new task.\n")
         logger.info(f"{type(error)}: {error}")
-        return False
