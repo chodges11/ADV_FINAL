@@ -1,5 +1,5 @@
 """
-main driver for a simple social network project
+Main driver for a simple social network project
 """
 # pylint: disable = import-error
 # pylint: disable = unused-variable
@@ -8,6 +8,8 @@ main driver for a simple social network project
 
 import csv
 import time
+from datetime import datetime
+
 from loguru import logger
 import peewee as pw
 import task_model as tm
@@ -25,16 +27,65 @@ def init_collections():
     tm.db.close()
 
 
-def list_tasks():
-    pass
+def list_tasks_sorted_by_num():
+    for task in tm.Tasks.select():
+        print(task.username)  # TODO: Format all the task information
+
+
+def list_tasks_sorted_by_priority():
+    for task in tm.Tasks.select():
+        print(task.username)  # TODO: Format all the task information
+
+
+def list_tasks_sorted_by_due_date():
+    for task in tm.Tasks.select():
+        print(task.username)  # TODO: Format all the task information
+
+
+def list_closed_tasks_between_dates():
+    for task in tm.Tasks.select():
+        print(task.username)  # TODO: Format all the task information
+
+
+def list_overdue_tasks():
+    for task in tm.Tasks.select():
+        print(task.username)  # TODO: Format all the task information
 
 
 def complete_task():
-    pass
+    """Completes the task."""
+
+    task_id = input('Task ID: ')
+
+    try:
+        with tm.db:
+            tm.db.connect(reuse_if_open=True)
+            task = tm.Tasks.get(tm.Tasks.task_id == task_id)
+            task.task_completed = "Completed"
+            task.save()
+            logger.info('Complete Task.')
+
+    except pw.DoesNotExist as error:
+        print("Task was not successfully marked as completed.\n")
+        logger.info(f"{type(error)}: {error}")
 
 
 def delete_task():
-    pass
+    """Deletes the task."""
+
+    task_id = input('Task ID: ')
+
+    try:
+        with tm.db:
+            tm.db.connect(reuse_if_open=True)
+            task = tm.Tasks.get(tm.Tasks.task_id == task_id)
+            task.task_deleted = "Deleted"
+            task.save()
+            logger.info('Deletes Task.')
+
+    except pw.DoesNotExist as error:
+        print("Task was not successfully marked as deleted.\n")
+        logger.info(f"{type(error)}: {error}")
 
 
 def edit_name():
@@ -50,12 +101,10 @@ def edit_name():
             task.task_name = task_name
             task.save()
             logger.info('Update Task Name.')
-            return True
 
     except pw.DoesNotExist as error:
         print("Task Name was not successfully updated.\n")
         logger.info(f"{type(error)}: {error}")
-        return False
 
 
 def edit_description():
@@ -76,11 +125,10 @@ def edit_description():
     except pw.DoesNotExist as error:
         print("Task Description was not successfully updated.\n")
         logger.info(f"{type(error)}: {error}")
-        return False
 
 
 def set_priority():
-    return input('Task Priority(Zero is highest): ')
+    return str(input('Task Priority(Zero is highest): '))
 
 
 def set_id():
@@ -96,11 +144,18 @@ def set_description():
 
 
 def set_start_date():
-    return input('Task Start Date: ')
+
+    return datetime.strptime(
+        input("Enter Task Start Date in format MM/DD/YYYY: "),
+        "%m/%d/%Y"
+    )
 
 
 def set_due_date():
-    return input('Task Due Date: ')
+    return datetime.strptime(
+        input("Enter Task Due Date in format MM/DD/YYYY: "),
+        "%m/%d/%Y"
+    )
 
 
 def add_new_task():
